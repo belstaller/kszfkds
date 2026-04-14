@@ -1,8 +1,8 @@
-import { getCounterUseCase } from '@/interfaces/http/composition/counterModule';
+import { counterController } from '@/interfaces/http/composition/counterModule';
 
 async function getCounterState() {
   try {
-    return await getCounterUseCase.execute('default');
+    return await counterController.get('default');
   } catch {
     return {
       counterId: 'default',

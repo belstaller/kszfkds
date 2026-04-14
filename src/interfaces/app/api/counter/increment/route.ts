@@ -9,12 +9,10 @@ export async function POST(request: NextRequest) {
       ? await request.json()
       : Object.fromEntries((await request.formData()).entries());
 
-    const normalizedPayload = {
+    const result = await counterController.increment({
       counterId: String(payload.counterId ?? 'default'),
       amount: Number(payload.amount ?? 1),
-    };
-
-    const result = await counterController.increment(normalizedPayload);
+    });
 
     if (!contentType.includes('application/json')) {
       return NextResponse.redirect(new URL('/', request.url));
@@ -23,6 +21,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected error.';
-    return NextResponse.json({ message }, { status: 400 });
+    const status =
+      message === 'Counter not found.' ? 404 : message.includes('Increment amount') ? 400 : 400;
+
+    return NextResponse.json({ message }, { status });
   }
 }

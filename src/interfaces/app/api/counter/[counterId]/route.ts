@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCounterUseCase } from '@/interfaces/http/composition/counterModule';
+import { counterController } from '@/interfaces/http/composition/counterModule';
 
 interface RouteContext {
   params: {
@@ -9,7 +9,7 @@ interface RouteContext {
 
 export async function GET(_: Request, context: RouteContext) {
   try {
-    const result = await getCounterUseCase.execute(context.params.counterId);
+    const result = await counterController.get(context.params.counterId);
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected error.';

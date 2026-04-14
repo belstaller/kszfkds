@@ -7,11 +7,15 @@ import { CounterController } from '../controllers/counterController';
 const counterRepository = new PostgresCounterRepository();
 const counterPolicy = new CounterPolicy();
 
+export const getCounterUseCase = new GetCounterUseCase(counterRepository);
 export const incrementCounterUseCase = new IncrementCounterUseCase(
   counterRepository,
   counterPolicy,
 );
 
-export const getCounterUseCase = new GetCounterUseCase(counterRepository);
+export const counterController = new CounterController(
+  getCounterUseCase,
+  incrementCounterUseCase,
+);
 
-export const counterController = new CounterController(incrementCounterUseCase);
+export { counterRepository };

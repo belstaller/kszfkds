@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 import { GetCounterUseCase } from '@/application/use-cases/GetCounterUseCase';
 import { IncrementCounterUseCase } from '@/application/use-cases/IncrementCounterUseCase';
 
@@ -15,12 +15,28 @@ export class CounterController {
   ) {}
 
   public async get(input: unknown) {
-    const counterId = counterIdSchema.parse(input);
-    return this.getCounterUseCase.execute(counterId);
+    try {
+      const counterId = counterIdSchema.parse(input);
+      return await this.getCounterUseCase.execute(counterId);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new Error('Invalid counter id.');
+      }
+
+      throw error;
+    }
   }
 
   public async increment(input: unknown) {
-    const dto = incrementCounterBodySchema.parse(input);
-    return this.incrementCounterUseCase.execute(dto);
+    try {
+      const dto = incrementCounterBodySchema.parse(input);
+      return await this.incrementCounterUseCase.execute(dto);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new Error('Invalid increment payload.');
+      }
+
+      throw error;
+    }
   }
 }

@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected error.';
     const status =
-      message === 'Counter not found.' ? 404 : message.includes('Increment amount') ? 400 : 400;
+      message === 'Counter not found.' ? 404 : message === 'Invalid increment payload.' ? 400 : message.includes('Increment amount') ? 400 : 400;
 
     return NextResponse.json({ message }, { status });
   }

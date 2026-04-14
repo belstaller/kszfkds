@@ -13,8 +13,16 @@ export async function GET(_: Request, context: RouteContext) {
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unexpected error.';
-    const status = message === 'Counter not found.' ? 404 : message === 'Invalid counter id.' ? 400 : 400;
+    const status = message === 'Counter not found.' || message === 'Failed to load counter from PostgreSQL.' ? 404 : 400;
 
-    return NextResponse.json({ message }, { status });
+    return NextResponse.json(
+      {
+        message:
+          status === 404
+            ? 'Counter data is currently unavailable.'
+            : 'We could not read the counter right now. Please try again.',
+      },
+      { status },
+    );
   }
 }
